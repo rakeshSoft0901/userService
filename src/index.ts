@@ -1,10 +1,13 @@
 import dotenv from "dotenv"
 import express from "express"
-import { connectDB } from "./config/server";
+import { connectDB } from "./config/db";
+import routes from "./routes/index.route";
 
 dotenv.config()
 
 const app = express()
+
+app.use("/api", routes);
 
 const PORT = process.env.PORT || 3000
 
