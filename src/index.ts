@@ -1,5 +1,5 @@
 import dotenv from "dotenv"
-import express from "express"
+import express, { Request, Response, NextFunction } from "express"
 import { connectDB } from "./config/db";
 import routes from "./routes/index.route";
 
@@ -8,6 +8,11 @@ dotenv.config()
 const app = express()
 
 app.use("/api", routes);
+
+// handle global route error
+app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
+  res.status(500).json({ message: err.message })
+})
 
 const PORT = process.env.PORT || 3000
 
