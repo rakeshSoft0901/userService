@@ -1,4 +1,6 @@
-import { Model, HydratedDocument } from "mongoose";
+import { Model, HydratedDocument, Types } from "mongoose";
+
+import { IProfile, IProfileMethods } from "./profile.type";
 
 export interface IUser {
   email: string;
@@ -7,6 +9,7 @@ export interface IUser {
   loginOtpExpiryAt?: Date | null;
   isActive: boolean;
   lastPasswordChangeAt?: Date | null;
+  profile?: Types.ObjectId | HydratedDocument<IProfile, IProfileMethods>;
 }
 
 export interface IUserMethods {

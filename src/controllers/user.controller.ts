@@ -3,6 +3,19 @@ import bcrypt from "bcrypt";
 import { expiryTime, generateOtp } from "../utils/genrateOtp";
 import UserModel from "../models/user.model";
 import { checkFieldPresent } from "../services/user.service";
+import { Types } from "mongoose";
+
+export const getUsers = async (req: Request, res: Response) => {
+  try {
+    const users = await UserModel.find().populate("profile")
+    res.status(200).json({ message: "Users fetched successfully", users })
+  } catch (error) {
+    const message = error instanceof Error ? error.message : "Unknown error";
+    res.status(400).json({
+      message
+    })
+  }
+}
 
 export const createUser = async (req: Request, res: Response) => {
   try {
@@ -120,6 +133,36 @@ export const signIn = async (req: Request, res: Response) => {
     res.status(200).json({ message: "User signed in successfully" })
   } catch (err) {
     const message = err instanceof Error ? err.message : "Unknown error";
+    res.status(400).json({
+      message
+    })
+  }
+}
+
+export const updateProfile = async (req: Request, res: Response) => {
+  try {
+    const { userId } = req.params
+    const { firstName, lastName, gender, bio } = req.body
+    const user = await UserModel.findById(userId).populate("profile");
+    if (!user) {
+      throw new Error("User not found")
+    }
+
+    const profile = user.profile;
+    if (!profile || profile instanceof Types.ObjectId) {
+      throw new Error("Profile not found");
+    }
+
+    profile.updateProfile({
+      firstName,
+      lastName,
+      gender,
+      bio
+    })
+    res.status(200).json({ message: "Profile updated successfully", profile })
+
+  } catch (error) {
+    const message = error instanceof Error ? error.message : "Unknown error";
     res.status(400).json({
       message
     })

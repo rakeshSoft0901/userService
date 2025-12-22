@@ -2,6 +2,7 @@ import { Schema, model } from "mongoose"
 import bcrypt from "bcrypt"
 import isEmail from "validator/lib/isEmail";
 import { IUser, IUserMethods, IUserModel } from "../types/models/user.type";
+import ProfileModel from "./profile.model";
 
 // Schema < DocType,ModelType,InstanceMethods >
 const userSchema = new Schema<IUser, IUserModel, IUserMethods>({
@@ -39,6 +40,11 @@ const userSchema = new Schema<IUser, IUserModel, IUserMethods>({
     type: Date,
     default: null
   },
+  profile: {
+    type: Schema.Types.ObjectId,
+    ref: "Profile",
+    unique: true // enforce one to one relationship
+  }
 },
   {
     timestamps: true
@@ -48,6 +54,20 @@ userSchema.pre("save", async function () {
   if (this.isModified("password")) {
     this.password = await bcrypt.hash(this.password, 10)
     this.lastPasswordChangeAt = new Date()
+  }
+})
+
+userSchema.post("save", async function () {
+  try {
+    const existingProfile = await ProfileModel.findOne({ user: this._id })
+    if (!existingProfile) {
+      const profile = await ProfileModel.create({ user: this._id })
+      this.profile = profile._id
+      await this.save()
+    }
+  } catch (error) {
+    await this.deleteOne() // delete the user if profile creation fails
+    throw error
   }
 })
 
