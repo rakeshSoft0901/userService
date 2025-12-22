@@ -6,7 +6,7 @@ import routes from "./routes/index.route";
 dotenv.config()
 
 const app = express()
-
+app.use(express.json())
 app.use("/api", routes);
 
 // handle global route error
@@ -23,7 +23,7 @@ connectDB()
       console.log(`Server is running on port ${PORT}`)
     })
   }).catch((error) => {
-    console.log("MongoDB connection error", error)
+    console.log("MongoDB connection error: ", error)
     process.exit(1)
   })
 

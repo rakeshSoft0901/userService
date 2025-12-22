@@ -1,8 +1,11 @@
 import { Router } from "express";
-import { createUser } from "../controllers/user.controller";
+import { createUser, reSendOtp, signIn, verifyOtp } from "../controllers/user.controller";
 
 const router = Router()
 
-router.get("/signUp", createUser)
+router.post("/signUp", createUser)
+router.post("/verifyOtp", verifyOtp)
+router.post("/reSendOtp", reSendOtp)
+router.post("/login", signIn)
 
 export default router
