@@ -23,3 +23,11 @@ export interface ISaveProfile {
   gender?: "male" | "female" | "other";
   bio?: string | null;
 }
+
+export interface IProfileSignature {
+  timestamp: number;
+  signature: string;
+  folder: string;
+  api_key: string;
+  cloud_name: string;
+}

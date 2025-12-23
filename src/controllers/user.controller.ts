@@ -4,11 +4,16 @@ import { expiryTime, generateOtp } from "../utils/genrateOtp";
 import UserModel from "../models/user.model";
 import { checkFieldPresent } from "../services/user.service";
 import { Types } from "mongoose";
+import { deleteImage, generateSignature, getAllImages, getProfileImageUrl } from "../services/cloudinary.service";
 
 export const getUsers = async (req: Request, res: Response) => {
   try {
+    // const signature = await generateSignature()
+    // // const signature = await getProfileImageUrl("user_profile/jrycvjckbufgyfxlhstf")
+    const signature = await getAllImages()
+    // const signature = await deleteImage("user_profile/jrycvjckbufgyfxlhstf")
     const users = await UserModel.find().populate("profile")
-    res.status(200).json({ message: "Users fetched successfully", users })
+    res.status(200).json({ message: "Users fetched successfully", users, signature })
   } catch (error) {
     const message = error instanceof Error ? error.message : "Unknown error";
     res.status(400).json({

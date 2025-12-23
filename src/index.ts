@@ -1,9 +1,8 @@
-import dotenv from "dotenv"
+import "dotenv/config"
 import express, { Request, Response, NextFunction } from "express"
 import { connectDB } from "./config/db";
 import routes from "./routes/index.route";
 
-dotenv.config()
 
 const app = express()
 app.use(express.json())
